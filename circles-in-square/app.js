@@ -10,6 +10,7 @@
   const random = Math.random.bind(Math);
   const floor = Math.floor.bind(Math);
 
+  const sum = row => (row.length ? row.reduce((acc, v) => acc + v, 0) : 0);
   const randomN = (N = 0) => Math.round(random() * N);
   const multiplyBy = a => b => a * b;
   const square = (a = 0) => a * a;
@@ -43,10 +44,83 @@
     return lowerXBound + Math.floor(random() * (upperXBound - lowerXBound));
   };
 
+  const createTriangleCirclesCenters = (N, size) => {
+    const sqrtN = Math.floor(Math.sqrt(N));
+    const isSquare = sqrtN === Math.sqrt(N);
+
+    const oddRowSize = sqrtN;
+    const evenRowSize = isSquare ? oddRowSize : oddRowSize - 1;
+    const rowSizes = [];
+
+    let l = 0;
+    let i = 0;
+
+    while (l !== N) {
+      const possibleSize = i++ % 2 === 0 ? oddRowSize : evenRowSize;
+      let size = 0;
+
+      if (possibleSize > N - l) {
+        size = N - l;
+      } else {
+        size = possibleSize;
+      }
+
+      rowSizes.push(size);
+      l += size;
+    }
+
+    const rowsCount = rowSizes.length;
+
+    const h = size / rowsCount;
+    const wOdd = size / (oddRowSize + 1);
+    const wEven = size / (evenRowSize + 1);
+    const isEven = rowsCount % 2 === 0;
+    let usedRows = 0;
+
+    const circleCenters = [];
+    const initialEpsilon = Math.round(size / square(N));
+
+    const calculateValue = (i, p) => {
+      return generateRandomRestrictedPoint(i * p + p / 2, initialEpsilon, size);
+    };
+
+    while (usedRows < rowsCount) {
+      if (rowsCount - usedRows === 1) {
+        const rowSize = rowSizes[usedRows];
+        for (let i = 0; i < rowSize; i += 1) {
+          const cc = {
+            y: calculateValue(usedRows, h),
+            x: calculateValue(i + i % 2, wOdd)
+          };
+          circleCenters.push(cc);
+        }
+        usedRows += 1;
+      } else {
+        const twoRowsSize = rowSizes[usedRows] + rowSizes[usedRows + 1];
+
+        for (let i = 0; i < twoRowsSize; i += 1) {
+          const imod2 = i % 2;
+          const cc = {
+            y: calculateValue(usedRows + imod2, h),
+            x: calculateValue(
+              Math.floor(i / 2) + imod2,
+              imod2 === 0 ? wEven : wOdd
+            )
+          };
+          circleCenters.push(cc);
+        }
+        usedRows += 2;
+      }
+    }
+
+    return circleCenters;
+  };
+
   const objectiveFunction = r => 1 / r;
 
   const createCircles = (n, size) => {
-    const circlesCenters = createRandomCirclesCenters(n, size);
+    // const circlesCenters = createRandomCirclesCenters(n, size);
+    const circlesCenters = createTriangleCirclesCenters(n, size);
     const distancesMatrix = calculateDistancesMatrix(circlesCenters);
     const r = findMinRadius(distancesMatrix, circlesCenters, size);
 
@@ -147,18 +221,19 @@
   const initDrawing = (ctx, { width = 0, height = 0 }) => circles => {
     ctx.fillStyle = colors.darkBlue;
     ctx.fillRect(0, 0, width, height);
-    ctx.font = '40px Arial';
 
     if (!circles) {
       return;
     }
+    const N = circles.length;
+    ctx.font = `${N / (N - 1)}em Arial`;
     ctx.strokeStyle = colors.lightBlue;
     ctx.fillStyle = colors.lightBlue;
     circles.forEach(({ x, y, r }, circleIndex) => {
       ctx.beginPath();
       ctx.ellipse(x, y, r, r, 0, 0, 2 * Math.PI);
       ctx.stroke();
-      ctx.fillText(circleIndex, x - 10, y + 10);
+      ctx.fillText(circleIndex, x - 5, y + 5);
     });
   };
 
@@ -269,16 +344,14 @@
         const step = history.remember(createState(circles, minR / width), N);
         circles = newCircles;
 
-        const filledSquare = N * (Math.PI * square(scaledR)) * 100;
-        const emptySquare = 100 - filledSquare;
+        const filledSquare = N * (Math.PI * square(scaledR));
 
         updateIterationsTable([
           step - 1,
           iterationsCount,
           scaledR.toFixed(4),
           newObjective.toFixed(4),
-          `${filledSquare.toFixed(2)}%`,
-          `${emptySquare.toFixed(2)}%`
+          `${filledSquare.toFixed(6)}`
         ]);
       }
     };
@@ -294,9 +367,10 @@
         Number(circlesCountInput.value) ||
         Math.max(Math.ceil(Math.random() * MAX_N), 2);
       epsilon = Number(epsilonInput.value) || EPSILON;
-      updatableCirclesCount = Math.floor(
-        N <= 100 ? Math.sqrt(N) : Math.pow(N, 1 / 3)
-      );
+      updatableCirclesCount = Math.round(
+        // N <= 100 ? Math.sqrt(N) : Math.pow(N, 1 / 3)
+        N / 5
+      ) || 1;
       startTime = Date.now();
       const [newCircles, minR] = createCircles(N, width);
 
