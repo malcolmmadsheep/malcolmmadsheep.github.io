@@ -323,6 +323,18 @@
       history.reset();
     };
 
+    const updateInfo = (currentStep, r) => {
+      const density = N * (Math.PI * square(r));
+
+      updateIterationsTable([
+        currentStep,
+        iterationsCount,
+        r.toFixed(4),
+        density.toFixed(4),
+        `${density.toFixed(6)}`
+      ]);
+    };
+
     const update = () => {
       if (!circles) {
         return;
@@ -341,18 +353,11 @@
       updateIterationsCount(++iterationsCount);
 
       if (newObjective <= oldObjective) {
-        const step = history.remember(createState(circles, minR / width), N);
+        const currentStep =
+          history.remember(createState(circles, scaledR), N) - 1;
         circles = newCircles;
 
-        const filledSquare = N * (Math.PI * square(scaledR));
-
-        updateIterationsTable([
-          step - 1,
-          iterationsCount,
-          scaledR.toFixed(4),
-          newObjective.toFixed(4),
-          `${filledSquare.toFixed(6)}`
-        ]);
+        updateInfo(currentStep, scaledR);
       }
     };
 
@@ -367,10 +372,7 @@
         Number(circlesCountInput.value) ||
         Math.max(Math.ceil(Math.random() * MAX_N), 2);
       epsilon = Number(epsilonInput.value) || EPSILON;
-      updatableCirclesCount = Math.round(
-        // N <= 100 ? Math.sqrt(N) : Math.pow(N, 1 / 3)
-        N / 5
-      ) || 1;
+      updatableCirclesCount = Math.round(N / 5) || 1;
       startTime = Date.now();
       const [newCircles, minR] = createCircles(N, width);
 
@@ -382,7 +384,12 @@
       epsilonInput.value = epsilon;
       iterationsCount = 0;
 
-      history.remember(createState(circles, minR / width), N);
+      const scaledR = minR / width;
+      const newObjective = 1 / scaledR;
+      const currentStep =
+        history.remember(createState(circles, scaledR), N) - 1;
+
+      updateInfo(currentStep, scaledR);
 
       draw(newCircles);
 
