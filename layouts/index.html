@@ -1,0 +1,59 @@
+{{ define "main" }}
+
+<section class="content">
+  <h1 class="content-header">About</h1>
+
+  <section class="about-content-body content-body">
+    <div class="profile-picture-wrapper">
+      <img
+        class="profile-picture"
+        src="img/profile-picture-placeholder.png"
+        alt="My photo should be here"
+      />
+    </div>
+    <div class="description">
+      <p>
+        Hi! 👋 It's Vlad from Ukraine 🇺🇦 here (or there, it depends). Anyway,
+        I'm glad to welcome you on my website.
+      </p>
+
+      <p>
+        <b>Who am I?</b> Software engineer at
+        <a href="https://nova.xyz/" target="_blank">Nova Labs</a>. Working on
+        telecom things based on
+        <a href="https://magmacore.org/" target="_blank">Magma</a>.
+      </p>
+
+      <p><b>What am I doing here?</b> Think. Write. Experiment.</p>
+
+      <p>
+        <b>Interests:</b> telecom, cryptography, networks, artificial
+        intelligence (matrix multiplication level), algorithms, Go, TypeScript,
+        front-end, teaching, foreign languages, talking about success with my
+        friends but do nothing to achieve it
+      </p>
+
+      <p>
+        <b>Wanna talk?</b> Just
+        <a href="mailto:malcolmmadsheep@gmail.com?subject=Let's talk"
+          >drop me a letter</a
+        >.
+      </p>
+
+      <!-- <p>
+        I'm software engineer with a passion to people, technologies and the
+        world that surround me. Everyone wants they own place in the Internet
+        and I'm not an exception.
+      </p>
+      <p>
+        I like getting to know the world by learning concepts created both by
+        people and by nature. I'm assured that the best way to learn any thing
+        is to explain it to somebody else.
+      </p> -->
+
+      <p>{{ partial "social-links.html" . }}</p>
+    </div>
+  </section>
+</section>
+
+{{ end }}

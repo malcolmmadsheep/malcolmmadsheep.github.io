@@ -1,0 +1,6 @@
+baseURL = 'http://localhost:3000'
+languageCode = 'en-us'
+title = 'Madland'
+menu = ['home', 'about']
+[permalinks]
+  blog = 'posts/:year/:month/:title/'

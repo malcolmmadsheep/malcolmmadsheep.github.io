@@ -1,0 +1,35 @@
+.site-header {
+    padding: 18px;
+    background-color: #000;
+    display: flex;
+    justify-content: space-between;
+    font-size: larger;
+
+    color: #fff;
+    
+    .link {
+        color: #fff;
+        text-decoration: none;
+        position: relative;
+
+        &::after {
+            content: "";
+            position: absolute;
+            height: 3px;
+            width: 0;
+            background-color: #fff;
+            bottom: -6px;
+            left: 0;
+            // transition: width 100ms ease-in;
+        }
+    }
+
+    .link:hover {
+        background: none;
+        border-bottom: none;
+        
+        &::after {
+            width: 100%;
+        }
+    }
+}

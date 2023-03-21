@@ -1,0 +1,11 @@
+<header class="site-header">
+  <div class="logo"></div>
+  <nav>
+    <ul class="nav-list">
+      <li><a class="link" href="{{ "/" | relURL }}">About</a></li>
+      {{ if ne (len (where .Site.RegularPages "Type" "blog")) 0 }}
+      <li><a class="link" href="{{ "/blog" | relURL }}">Blog</a></li>
+      {{ end }}
+    </ul>
+  </nav>
+</header>

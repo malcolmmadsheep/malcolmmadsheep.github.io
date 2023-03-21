@@ -1,0 +1,12 @@
+{{define "main"}} Pages:
+<ul>
+  {{ range .Site.Pages }}
+  <li>{{ .Type }}</li>
+  {{ end }}
+  <p>{{ .Site.Pages | len }}</p>
+
+  <p>{{ .Content }}</p>
+
+  Blog wtf
+</ul>
+{{end}}
