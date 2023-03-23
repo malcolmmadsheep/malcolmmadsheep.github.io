@@ -1,11 +1,29 @@
 .social-links {
-    display: flex;
+    display: inline-flex;
+    align-items: center;
 
     .item {
         margin-right: 12px;
 
         &:last-child {
             margin-right: 0;
+        }
+
+        .icon-link {
+            .icon {
+                width: 24px;
+                opacity: 0.25;
+                transition: opacity .1s ease-out;
+    
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+
+        .icon-link:hover {
+            background: none;
+            border: none;
         }
     }
 }
