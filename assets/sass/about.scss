@@ -1,5 +1,5 @@
 .content:not(.blog-post-content) {
-    padding: 48px;
+    padding: 36px;
     background-color: #fff;
     border-radius: 24px;
 
@@ -19,6 +19,22 @@
 
             p + p {
                 margin-top: 12px;
+            }
+        }
+    }
+
+    @media (max-width: 700px) {
+        & {
+            padding: 24px;
+        }
+
+        .about-content-body {
+            flex-direction: column;
+            align-items: center;
+
+            .description {
+                margin-top: 18px;
+                margin-left: 0;
             }
         }
     }
